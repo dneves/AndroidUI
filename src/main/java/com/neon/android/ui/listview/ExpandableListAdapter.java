@@ -27,9 +27,24 @@ public class ExpandableListAdapter< HEADER_MODEL, ROW_MODEL > extends BaseExpand
     private final List<ListHeaderItem< HEADER_MODEL >> groups = new ArrayList<>();
     private final Map< Integer, List<ListRowItem< ROW_MODEL >> > groupChildren = new HashMap<>();
 
+    private int groupIndicatorId;
+    private int groupIndicatorExpanded = R.drawable.ic_navigation_arrow_drop_up;
+    private int groupIndicatorCollapsed = R.drawable.ic_navigation_arrow_drop_down;
 
     public ExpandableListAdapter( Context context ) {
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public ExpandableListAdapter( Context context, int groupIndicatorId ) {
+        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.groupIndicatorId = groupIndicatorId;
+    }
+
+    public ExpandableListAdapter( Context context, int groupIndicatorId, int groupIndicatorExpanded, int groupIndicatorCollapsed) {
+        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.groupIndicatorId = groupIndicatorId;
+        this.groupIndicatorExpanded = groupIndicatorExpanded;
+        this.groupIndicatorCollapsed = groupIndicatorCollapsed;
     }
 
     @Override
@@ -71,7 +86,7 @@ public class ExpandableListAdapter< HEADER_MODEL, ROW_MODEL > extends BaseExpand
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         View result = convertView;
-        result = inflater.inflate( R.layout.expandable_list_group, parent, false );
+
         // TODO : use viewholder pattern
 
         // get rendering item
@@ -80,21 +95,15 @@ public class ExpandableListAdapter< HEADER_MODEL, ROW_MODEL > extends BaseExpand
         RowItemHolder<HEADER_MODEL> viewHolder = item.getViewHolder();
         if ( viewHolder != null ) {
             // create view to render
-            View layout = inflater.inflate(viewHolder.getLayout(item), parent, false);
-            viewHolder.fill( layout, item );
-
-            if ( result instanceof ViewGroup ) {
-                ((ViewGroup) result).addView(layout);
-            }
-//            result = inflater.inflate(viewHolder.getLayout(item), parent, false);
-//            viewHolder.fill(result, item);
+            result = inflater.inflate(viewHolder.getLayout(item), parent, false);
+            viewHolder.fill( result, item );
         }
 
-        ImageView groupIndicator = (ImageView) result.findViewById( R.id.groupIndicator );
+        ImageView groupIndicator = (ImageView) result.findViewById( groupIndicatorId );
         if ( groupIndicator != null ) {
             if ( getChildrenCount( groupPosition ) > 0 ) {
                 groupIndicator.setVisibility( View.VISIBLE );
-                groupIndicator.setImageResource( isExpanded ? R.drawable.ic_navigation_arrow_drop_up : R.drawable.ic_navigation_arrow_drop_down );
+                groupIndicator.setImageResource( isExpanded ? groupIndicatorExpanded : groupIndicatorCollapsed );
             } else {
                 groupIndicator.setVisibility( View.GONE );
             }
