@@ -1,0 +1,149 @@
+package com.neon.android.ui.listview;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
+
+import com.neon.android.ui.R;
+import com.neon.android.ui.listview.model.ListHeaderItem;
+import com.neon.android.ui.listview.model.ListRowItem;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+/**
+ * example from http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
+ */
+public class ExpandableListAdapter< HEADER_MODEL, ROW_MODEL > extends BaseExpandableListAdapter {
+
+    private final LayoutInflater inflater;
+
+    private final List<ListHeaderItem< HEADER_MODEL >> groups = new ArrayList<>();
+    private final Map< Integer, List<ListRowItem< ROW_MODEL >> > groupChildren = new HashMap<>();
+
+
+    public ExpandableListAdapter( Context context ) {
+        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    public int getGroupCount() {
+        return groups.size();
+    }
+
+    @Override
+    public int getChildrenCount(int groupPosition) {
+        List<ListRowItem<ROW_MODEL>> items = groupChildren.get(groupPosition);
+        return items != null ? items.size() : 0;
+    }
+
+    @Override
+    public ListHeaderItem< HEADER_MODEL > getGroup(int groupPosition) {
+        return groups.get(groupPosition);
+    }
+
+    @Override
+    public ListRowItem< ROW_MODEL > getChild(int groupPosition, int childPosition) {
+        return groupChildren.get( groupPosition ).get(childPosition);
+    }
+
+    @Override
+    public long getGroupId(int groupPosition) {
+        return groupPosition;
+    }
+
+    @Override
+    public long getChildId(int groupPosition, int childPosition) {
+        return childPosition;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return false;
+    }
+
+    @Override
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        View result = convertView;
+        result = inflater.inflate( R.layout.expandable_list_group, parent, false );
+        // TODO : use viewholder pattern
+
+        // get rendering item
+        ListHeaderItem<HEADER_MODEL> item = groups.get(groupPosition);
+
+        RowItemHolder<HEADER_MODEL> viewHolder = item.getViewHolder();
+        if ( viewHolder != null ) {
+            // create view to render
+            View layout = inflater.inflate(viewHolder.getLayout(item), parent, false);
+            viewHolder.fill( layout, item );
+
+            if ( result instanceof ViewGroup ) {
+                ((ViewGroup) result).addView(layout);
+            }
+//            result = inflater.inflate(viewHolder.getLayout(item), parent, false);
+//            viewHolder.fill(result, item);
+        }
+
+        ImageView groupIndicator = (ImageView) result.findViewById( R.id.groupIndicator );
+        if ( groupIndicator != null ) {
+            if ( getChildrenCount( groupPosition ) > 0 ) {
+                groupIndicator.setVisibility( View.VISIBLE );
+                groupIndicator.setImageResource( isExpanded ? R.drawable.ic_navigation_arrow_drop_up : R.drawable.ic_navigation_arrow_drop_down );
+            } else {
+                groupIndicator.setVisibility( View.GONE );
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+        View result = convertView;
+        // TODO : use viewholder pattern
+
+        // get rendering item
+        ListRowItem<ROW_MODEL> item = groupChildren.get(groupPosition).get(childPosition);
+
+        RowItemHolder<ROW_MODEL> viewHolder = item.getViewHolder();
+        if ( viewHolder != null ) {
+            // create view to render
+            result = inflater.inflate(viewHolder.getLayout(item), parent, false);
+            viewHolder.fill(result, item);
+        }
+
+        return result;
+    }
+
+    @Override
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
+        return true;
+    }
+
+    public void clear() {
+        groups.clear();
+        groupChildren.clear();
+    }
+
+    public void addGroup( ListHeaderItem< HEADER_MODEL > item ) {
+        groups.add( item );
+        groupChildren.put( groups.size(), new ArrayList<ListRowItem<ROW_MODEL>>() );
+    }
+
+    public void addGroupChild( ListHeaderItem< HEADER_MODEL > item, ListRowItem< ROW_MODEL > child ) {
+        int indexOf = groups.indexOf(item);
+        List<ListRowItem<ROW_MODEL>> listRowItems = groupChildren.get(indexOf);
+        if ( listRowItems == null ) {
+            listRowItems = new ArrayList<>();
+            groupChildren.put( indexOf, listRowItems );
+        }
+        listRowItems.add( child );
+    }
+
+}
