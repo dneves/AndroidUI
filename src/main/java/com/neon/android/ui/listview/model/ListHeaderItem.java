@@ -8,9 +8,4 @@ public class ListHeaderItem< TYPE > extends ListItem< TYPE > {
         super(viewHolder);
     }
 
-    @Override
-    public String toString() {
-        return getModel().toString();
-    }
-
 }

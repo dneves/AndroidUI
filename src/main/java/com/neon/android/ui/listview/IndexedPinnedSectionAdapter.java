@@ -2,13 +2,12 @@ package com.neon.android.ui.listview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.widget.SectionIndexer;
 
 import com.neon.android.ui.listview.model.ListHeaderItem;
 import com.neon.android.ui.listview.model.ListItem;
+import com.neon.android.ui.listview.model.PinnedListHeaderItem;
 
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -89,8 +88,12 @@ public class IndexedPinnedSectionAdapter< HEADER_MODEL, ROW_MODEL >
     @Override
     public void add( ListItem item ) {
         if ( item instanceof ListHeaderItem) {
-            // TODO: section item label (toString())
-            SectionItem sectionItem = new SectionItem( item.toString(), sectionPosition, listPosition );
+            String label = item.toString();
+            if ( item instanceof PinnedListHeaderItem ) {
+                PinnedListHeaderItem< HEADER_MODEL > header = ( PinnedListHeaderItem< HEADER_MODEL > ) item;
+                label = header.getLabel();
+            }
+            SectionItem sectionItem = new SectionItem( label, sectionPosition, listPosition );
             sections.add( sectionItem );
             sectionPosition++;
         }
@@ -98,11 +101,11 @@ public class IndexedPinnedSectionAdapter< HEADER_MODEL, ROW_MODEL >
         int lastSectionIndex = sections.size() - 1;
         SectionItem lastSectionItem = lastSectionIndex >= 0 && lastSectionIndex< sections.size() ?
                 sections.get( sections.size() - 1 ) : null;
-        byListPosition.put( listPosition, lastSectionItem );
+        byListPosition.put(listPosition, lastSectionItem);
 
         listPosition++;
 
-        super.add( item );
+        super.add(item);
     }
 
     @TargetApi( 11 )
