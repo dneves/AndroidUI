@@ -30,6 +30,6 @@ android {
         minSdkVersion 4
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0.0-SNAPSHOT"
+        versionName getProperty( 'version' )
     }
 }
