@@ -20,12 +20,12 @@ import java.util.Map;
 /**
  * example from http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
  */
-public class ExpandableListAdapter< HEADER_MODEL, ROW_MODEL > extends BaseExpandableListAdapter {
+public class ExpandableListAdapter< HEADER_MODEL, HEADER_VIEW_HOLDER, ROW_MODEL, ROW_VIEW_HOLDER > extends BaseExpandableListAdapter {
 
     private final LayoutInflater inflater;
 
-    private final List<ListHeaderItem< HEADER_MODEL >> groups = new ArrayList<>();
-    private final Map< Integer, List<ListRowItem< ROW_MODEL >> > groupChildren = new HashMap<>();
+    private final List<ListHeaderItem< HEADER_MODEL, HEADER_VIEW_HOLDER >> groups = new ArrayList<>();
+    private final Map< Integer, List<ListRowItem< ROW_MODEL, ROW_VIEW_HOLDER > > > groupChildren = new HashMap<>();
 
     private int groupIndicatorId;
     private int groupIndicatorExpanded = R.drawable.ic_navigation_arrow_drop_up;
@@ -54,17 +54,17 @@ public class ExpandableListAdapter< HEADER_MODEL, ROW_MODEL > extends BaseExpand
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        List<ListRowItem<ROW_MODEL>> items = groupChildren.get(groupPosition);
+        List< ListRowItem< ROW_MODEL, ROW_VIEW_HOLDER > > items = groupChildren.get(groupPosition);
         return items != null ? items.size() : 0;
     }
 
     @Override
-    public ListHeaderItem< HEADER_MODEL > getGroup(int groupPosition) {
+    public ListHeaderItem< HEADER_MODEL, HEADER_VIEW_HOLDER > getGroup(int groupPosition) {
         return groups.get(groupPosition);
     }
 
     @Override
-    public ListRowItem< ROW_MODEL > getChild(int groupPosition, int childPosition) {
+    public ListRowItem< ROW_MODEL, ROW_VIEW_HOLDER > getChild(int groupPosition, int childPosition) {
         return groupChildren.get( groupPosition ).get(childPosition);
     }
 
@@ -87,16 +87,18 @@ public class ExpandableListAdapter< HEADER_MODEL, ROW_MODEL > extends BaseExpand
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         View result = convertView;
 
-        // TODO : use viewholder pattern
-
         // get rendering item
-        ListHeaderItem<HEADER_MODEL> item = groups.get(groupPosition);
+        ListHeaderItem< HEADER_MODEL, HEADER_VIEW_HOLDER > item = groups.get(groupPosition);
 
-        RowItemHolder<HEADER_MODEL> viewHolder = item.getViewHolder();
+        RowItemHolder< HEADER_MODEL, HEADER_VIEW_HOLDER > viewHolder = item.getViewHolder();
         if ( viewHolder != null ) {
-            // create view to render
-            result = inflater.inflate(viewHolder.getLayout(item), parent, false);
-            viewHolder.fill( result, item );
+            if ( result == null ) {
+                // create view to render
+                result = inflater.inflate(viewHolder.getLayout(item), parent, false);
+                HEADER_VIEW_HOLDER header_view_holder = viewHolder.onCreateView(result);
+                result.setTag( header_view_holder );
+            }
+            viewHolder.fill((HEADER_VIEW_HOLDER) result.getTag(), item );
         }
 
         ImageView groupIndicator = (ImageView) result.findViewById( groupIndicatorId );
@@ -115,16 +117,19 @@ public class ExpandableListAdapter< HEADER_MODEL, ROW_MODEL > extends BaseExpand
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         View result = convertView;
-        // TODO : use viewholder pattern
 
         // get rendering item
-        ListRowItem<ROW_MODEL> item = groupChildren.get(groupPosition).get(childPosition);
+        ListRowItem< ROW_MODEL, ROW_VIEW_HOLDER > item = groupChildren.get(groupPosition).get(childPosition);
 
-        RowItemHolder<ROW_MODEL> viewHolder = item.getViewHolder();
+        RowItemHolder< ROW_MODEL, ROW_VIEW_HOLDER > viewHolder = item.getViewHolder();
         if ( viewHolder != null ) {
-            // create view to render
-            result = inflater.inflate(viewHolder.getLayout(item), parent, false);
-            viewHolder.fill(result, item);
+            if ( result == null ) {
+                // create view to render
+                result = inflater.inflate(viewHolder.getLayout(item), parent, false);
+                ROW_VIEW_HOLDER row_view_holder = viewHolder.onCreateView(result);
+                result.setTag( row_view_holder );
+            }
+            viewHolder.fill((ROW_VIEW_HOLDER) result.getTag(), item);
         }
 
         return result;
@@ -140,14 +145,14 @@ public class ExpandableListAdapter< HEADER_MODEL, ROW_MODEL > extends BaseExpand
         groupChildren.clear();
     }
 
-    public void addGroup( ListHeaderItem< HEADER_MODEL > item ) {
+    public void addGroup( ListHeaderItem< HEADER_MODEL, HEADER_VIEW_HOLDER > item ) {
         groups.add( item );
-        groupChildren.put( groups.size(), new ArrayList<ListRowItem<ROW_MODEL>>() );
+        groupChildren.put( groups.size(), new ArrayList<ListRowItem< ROW_MODEL, ROW_VIEW_HOLDER > >() );
     }
 
-    public void addGroupChild( ListHeaderItem< HEADER_MODEL > item, ListRowItem< ROW_MODEL > child ) {
+    public void addGroupChild( ListHeaderItem< HEADER_MODEL, HEADER_VIEW_HOLDER > item, ListRowItem< ROW_MODEL, ROW_VIEW_HOLDER > child ) {
         int indexOf = groups.indexOf(item);
-        List<ListRowItem<ROW_MODEL>> listRowItems = groupChildren.get(indexOf);
+        List<ListRowItem<ROW_MODEL, ROW_VIEW_HOLDER>> listRowItems = groupChildren.get(indexOf);
         if ( listRowItems == null ) {
             listRowItems = new ArrayList<>();
             groupChildren.put( indexOf, listRowItems );

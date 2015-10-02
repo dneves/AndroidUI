@@ -1,6 +1,7 @@
 package com.neon.android.ui.filter;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,15 +30,15 @@ public class FilteringImageTouchListener implements View.OnTouchListener {
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            image.setColorFilter(filter);
+            image.setColorFilter( filter, PorterDuff.Mode.SRC_ATOP );
             rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            image.setColorFilter(clearFilter);
+            image.setColorFilter(clearFilter, PorterDuff.Mode.SRC_ATOP);
         }
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             if (!rect.contains(v.getLeft() + (int) event.getX(), v.getTop() + (int) event.getY())) {
-                image.setColorFilter(clearFilter);
+                image.setColorFilter(clearFilter, PorterDuff.Mode.SRC_ATOP);
             }
         }
         return false;

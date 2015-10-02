@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 
-public class IndexedPinnedSectionAdapter< HEADER_MODEL, ROW_MODEL >
-        extends PinnedSectionAdapter< HEADER_MODEL, ROW_MODEL >
+public class IndexedPinnedSectionAdapter< HEADER_MODEL, HEADER_VIEW_HOLDER, ROW_MODEL, ROW_VIEW_HOLDER >
+        extends PinnedSectionAdapter< HEADER_MODEL, HEADER_VIEW_HOLDER, ROW_MODEL, ROW_VIEW_HOLDER >
         implements SectionIndexer {
 
 
-    private class SectionItem {
+    private static class SectionItem {
         private String title;
         private int sectionPosition;
         private int listPosition;
@@ -90,7 +90,8 @@ public class IndexedPinnedSectionAdapter< HEADER_MODEL, ROW_MODEL >
         if ( item instanceof ListHeaderItem) {
             String label = item.toString();
             if ( item instanceof PinnedListHeaderItem ) {
-                PinnedListHeaderItem< HEADER_MODEL > header = ( PinnedListHeaderItem< HEADER_MODEL > ) item;
+                PinnedListHeaderItem< HEADER_MODEL, HEADER_VIEW_HOLDER > header =
+                        ( PinnedListHeaderItem< HEADER_MODEL, HEADER_VIEW_HOLDER > ) item;
                 label = header.getLabel();
             }
             SectionItem sectionItem = new SectionItem( label, sectionPosition, listPosition );

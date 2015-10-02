@@ -13,7 +13,7 @@ import com.neon.android.ui.listview.model.ListRowItem;
 /**
  * https://github.com/beworker/pinned-section-listview
  */
-public class PinnedSectionAdapter< HEADER_MODEL, ROW_MODEL >
+public class PinnedSectionAdapter< HEADER_MODEL, HEADER_VIEW_HOLDER, ROW_MODEL, ROW_VIEW_HOLDER >
         extends ArrayAdapter<ListItem>
         implements PinnedSectionListView.PinnedSectionListAdapter {
 
@@ -38,19 +38,25 @@ public class PinnedSectionAdapter< HEADER_MODEL, ROW_MODEL >
         int viewType = getItemViewType(position);
         switch (viewType) {
             case HEADER: {
-                ListHeaderItem<HEADER_MODEL> headerItem = (ListHeaderItem<HEADER_MODEL>) item;
-                RowItemHolder<HEADER_MODEL> viewHolder = headerItem.getViewHolder();
-                // TODO : use viewholder pattern
-                view = inflater.inflate(viewHolder.getLayout(headerItem), parent, false);
-                viewHolder.fill(view, headerItem);
+                ListHeaderItem<HEADER_MODEL, HEADER_VIEW_HOLDER > headerItem = (ListHeaderItem<HEADER_MODEL, HEADER_VIEW_HOLDER >) item;
+                RowItemHolder<HEADER_MODEL, HEADER_VIEW_HOLDER > viewHolder = headerItem.getViewHolder();
+                if ( view == null ) {
+                    view = inflater.inflate(viewHolder.getLayout(headerItem), parent, false);
+                    HEADER_VIEW_HOLDER header_view_holder = viewHolder.onCreateView(view);
+                    view.setTag( header_view_holder );
+                }
+                viewHolder.fill( ( HEADER_VIEW_HOLDER ) view.getTag(), headerItem);
                 break;
             }
             case ROW: {
-                ListRowItem<ROW_MODEL> rowItem = (ListRowItem<ROW_MODEL>) item;
-                RowItemHolder<ROW_MODEL> viewHolder = rowItem.getViewHolder();
-                // TODO : use viewholder pattern
-                view = inflater.inflate( viewHolder.getLayout(rowItem), parent, false);
-                viewHolder.fill(view, rowItem);
+                ListRowItem<ROW_MODEL, ROW_VIEW_HOLDER > rowItem = (ListRowItem<ROW_MODEL, ROW_VIEW_HOLDER >) item;
+                RowItemHolder<ROW_MODEL, ROW_VIEW_HOLDER> viewHolder = rowItem.getViewHolder();
+                if ( view == null ) {
+                    view = inflater.inflate(viewHolder.getLayout(rowItem), parent, false);
+                    ROW_VIEW_HOLDER row_view_holder = viewHolder.onCreateView(view);
+                    view.setTag( row_view_holder );
+                }
+                viewHolder.fill( ( ROW_VIEW_HOLDER ) view.getTag(), rowItem);
                 break;
             }
         }

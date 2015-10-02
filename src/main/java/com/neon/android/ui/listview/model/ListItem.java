@@ -3,24 +3,24 @@ package com.neon.android.ui.listview.model;
 
 import com.neon.android.ui.listview.RowItemHolder;
 
-public class ListItem< TYPE > {
+public class ListItem< TYPE, VIEW_HOLDER > {
 
     public interface OnItemClickListener< TYPE > {
         void onClick(TYPE model);
     }
 
-    private final RowItemHolder<TYPE> viewHolder;
+    private final RowItemHolder<TYPE, VIEW_HOLDER > viewHolder;
 
     private OnItemClickListener< TYPE > onItemClickListener;
 
     private TYPE model;
 
 
-    public ListItem( RowItemHolder<TYPE> viewHolder ) {
+    public ListItem( RowItemHolder<TYPE, VIEW_HOLDER > viewHolder ) {
         this.viewHolder = viewHolder;
     }
 
-    public RowItemHolder<TYPE> getViewHolder() {
+    public RowItemHolder<TYPE, VIEW_HOLDER > getViewHolder() {
         return viewHolder;
     }
 
