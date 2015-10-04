@@ -95,7 +95,7 @@ public class ExpandableListAdapter< HEADER_MODEL, HEADER_VIEW_HOLDER, ROW_MODEL,
             if ( result == null ) {
                 // create view to render
                 result = inflater.inflate(viewHolder.getLayout(item), parent, false);
-                HEADER_VIEW_HOLDER header_view_holder = viewHolder.onCreateView(result);
+                HEADER_VIEW_HOLDER header_view_holder = viewHolder.onCreateView(result, item);
                 result.setTag( header_view_holder );
             }
             viewHolder.fill((HEADER_VIEW_HOLDER) result.getTag(), item );
@@ -126,7 +126,7 @@ public class ExpandableListAdapter< HEADER_MODEL, HEADER_VIEW_HOLDER, ROW_MODEL,
             if ( result == null ) {
                 // create view to render
                 result = inflater.inflate(viewHolder.getLayout(item), parent, false);
-                ROW_VIEW_HOLDER row_view_holder = viewHolder.onCreateView(result);
+                ROW_VIEW_HOLDER row_view_holder = viewHolder.onCreateView(result, item);
                 result.setTag( row_view_holder );
             }
             viewHolder.fill((ROW_VIEW_HOLDER) result.getTag(), item);

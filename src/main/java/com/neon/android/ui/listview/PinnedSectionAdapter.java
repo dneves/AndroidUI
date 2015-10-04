@@ -42,7 +42,7 @@ public class PinnedSectionAdapter< HEADER_MODEL, HEADER_VIEW_HOLDER, ROW_MODEL, 
                 RowItemHolder<HEADER_MODEL, HEADER_VIEW_HOLDER > viewHolder = headerItem.getViewHolder();
                 if ( view == null ) {
                     view = inflater.inflate(viewHolder.getLayout(headerItem), parent, false);
-                    HEADER_VIEW_HOLDER header_view_holder = viewHolder.onCreateView(view);
+                    HEADER_VIEW_HOLDER header_view_holder = viewHolder.onCreateView(view, headerItem);
                     view.setTag( header_view_holder );
                 }
                 viewHolder.fill( ( HEADER_VIEW_HOLDER ) view.getTag(), headerItem);
@@ -53,7 +53,7 @@ public class PinnedSectionAdapter< HEADER_MODEL, HEADER_VIEW_HOLDER, ROW_MODEL, 
                 RowItemHolder<ROW_MODEL, ROW_VIEW_HOLDER> viewHolder = rowItem.getViewHolder();
                 if ( view == null ) {
                     view = inflater.inflate(viewHolder.getLayout(rowItem), parent, false);
-                    ROW_VIEW_HOLDER row_view_holder = viewHolder.onCreateView(view);
+                    ROW_VIEW_HOLDER row_view_holder = viewHolder.onCreateView(view, rowItem);
                     view.setTag( row_view_holder );
                 }
                 viewHolder.fill( ( ROW_VIEW_HOLDER ) view.getTag(), rowItem);

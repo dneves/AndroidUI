@@ -8,7 +8,7 @@ public interface RowItemHolder< MODEL, V > {
 
     < I extends ListItem< MODEL, V > > int getLayout( I item );
 
-    V onCreateView( View view );
+    < I extends ListItem< MODEL, V > > V onCreateView( View view, I item );
 
     < I extends ListItem< MODEL, V > > void fill( V viewHolder, I item );
 
