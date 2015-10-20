@@ -10,6 +10,9 @@ public class FragmentNavigator {
 
     private final int containerId;
 
+    private Fragment current;
+
+
     public FragmentNavigator(FragmentManager fragmentManager, int containerId) {
         this.fragmentManager = fragmentManager;
         this.containerId = containerId;
@@ -24,7 +27,12 @@ public class FragmentNavigator {
         if ( addToBackStack ) {
             fragmentTransaction.addToBackStack( "" + target.getId() );
         }
+        this.current = target;
         fragmentTransaction.commit();
+    }
+
+    public Fragment getCurrent() {
+        return current;
     }
 
 }
