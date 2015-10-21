@@ -31,6 +31,10 @@ public class ExpandableListAdapter< HEADER_MODEL, HEADER_VIEW_HOLDER, ROW_MODEL,
     private int groupIndicatorExpanded = R.drawable.ic_navigation_arrow_drop_up;
     private int groupIndicatorCollapsed = R.drawable.ic_navigation_arrow_drop_down;
 
+    private ListHeaderItem< HEADER_MODEL, HEADER_VIEW_HOLDER > selectedGroup;
+    private ListRowItem< ROW_MODEL, ROW_VIEW_HOLDER > selectedChild;
+
+
     public ExpandableListAdapter( Context context ) {
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -160,4 +164,19 @@ public class ExpandableListAdapter< HEADER_MODEL, HEADER_VIEW_HOLDER, ROW_MODEL,
         listRowItems.add( child );
     }
 
+    public ListHeaderItem<HEADER_MODEL, HEADER_VIEW_HOLDER> getSelectedGroup() {
+        return selectedGroup;
+    }
+
+    public void setSelectedGroup(ListHeaderItem<HEADER_MODEL, HEADER_VIEW_HOLDER> selectedGroup) {
+        this.selectedGroup = selectedGroup;
+    }
+
+    public ListRowItem<ROW_MODEL, ROW_VIEW_HOLDER> getSelectedChild() {
+        return selectedChild;
+    }
+
+    public void setSelectedChild(ListRowItem<ROW_MODEL, ROW_VIEW_HOLDER> selectedChild) {
+        this.selectedChild = selectedChild;
+    }
 }
