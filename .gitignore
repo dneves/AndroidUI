@@ -3,9 +3,6 @@
 .DS_Store
 local.properties
 .gradle/
-gradle/
 gen/
-gradlew
-gradlew.bat
 build/
 
