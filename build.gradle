@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 project.group = 'com.neon'
-project.version = getProperty( 'version'
+project.version = getProperty( 'version' )
 
 buildscript {
     repositories {
