@@ -13,8 +13,12 @@ public final class NavUtilillities {
     }
 
     public static void navigateUp( Activity activity ) {
+        navigateUp( activity, false );
+    }
+
+    public static void navigateUp( Activity activity, boolean mustRecreateTask ) {
         Intent upIntent = NavUtils.getParentActivityIntent( activity );
-        if (NavUtils.shouldUpRecreateTask( activity, upIntent)) {
+        if ( mustRecreateTask || NavUtils.shouldUpRecreateTask( activity, upIntent)) {
             TaskStackBuilder.create(activity)
                     .addNextIntentWithParentStack(upIntent)
                     .startActivities();
